@@ -6,19 +6,13 @@
       check out the
       <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
     </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
+    <button color="blue" large @click="loadNextImage" >load</button>
+                    Another <v-icon>refresh</v-icon>
+
+<div>
+                    <img :src="image.url">
+                    <img>
+</div>
     <h3>Ecosystem</h3>
     <ul>
       <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
@@ -31,11 +25,52 @@
 </template>
 
 <script>
+import axios from "axios" // for calling APIs
 export default {
-  name: 'HelloWorld',
+    name: 'HelloWorld',
   props: {
     msg: String
+  },
+  data() {
+    return {
+      image: { url: ""}
+    }
+  },
+  mounted() {
+    this.loadNextImage();
+  },
+  methods: {
+    loadNextImage()
+    {
+        try{
+            axios.defaults.headers.common['x-api-key'] = "DEMO-API-KEY" // Replace this with your API Key
+            // let response = axios.get('https://api.thecatapi.com/v1/images/search', { params: { limit:1, size:"full" } } ) // Ask for 1 Image, at full resolution
+            axios.get('https://api.thecatapi.com/v1/images/search', { params: { limit:1, size:"full" } } ) // Ask for 1 Image, at full resolution
+            .then(response => {
+              // eslint-disable-next-line
+              console.log(response);
+              this.image = response.data[0]
+            })
+            .catch(error=> {
+              // eslint-disable-next-line
+              console.log(error);
+            })
+            // this.image = response.data[0] // the response is an Array, so just use the first item as the Image
+            // eslint-disable-next-line
+            console.log("-- Image from TheCatAPI.com")
+            // eslint-disable-next-line
+            // console.log(response.data)
+            //console.log("id:", this.image.id)
+            
+            // eslint-disable-next-line
+            //console.log("url:", this.image.url)
+        }catch(err){
+          // eslint-disable-next-line
+            //console.log(err)
+        }
+    }
   }
+
 }
 </script>
 
